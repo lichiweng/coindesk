@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface CoindeskDao extends JpaRepository<CoindeskEntity, Long> {
     Optional<CoindeskEntity> findByCodeAndCharName(String code, String charName);
+    Optional<CoindeskEntity> findById(Long id);
+    Optional<CoindeskEntity> findByCode(String code);
 }

@@ -1,7 +1,6 @@
 package demo.coindesk.entity;
 
 import lombok.Data;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -20,7 +19,7 @@ public class CoindeskEntity {
     private String charName;
     @Column(name = "updated_utc", nullable = false, length = 50)
     private String updatedUtc;
-    @Column(name = "code", nullable = false, length = 10)
+    @Column(name = "code", nullable = false, length = 10, unique = true)
     private String code;
     @Column(name = "currency_en", nullable = false, length = 10)
     private String currencyEn;
@@ -35,14 +34,11 @@ public class CoindeskEntity {
     @Column(name = "rate_float", nullable = false)
     private BigDecimal rateFloat;
     @Column(name = "created_by", nullable = false, length = 50)
-    @CreatedBy
     private String createdBy;
-    @Column(name = "create_date", nullable = false, updatable = false)
-    @CreatedDate
+    @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
     @Column(name = "updated_by", nullable = false, length = 50)
     private String updatedBy;
-    @Column(nullable = false)
-    @LastModifiedDate
+    @Column(name = "updated_date", nullable = false)
     private LocalDateTime updatedDate;
 }

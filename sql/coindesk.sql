@@ -10,8 +10,11 @@ create table coindesk (
       rate_float decimal(19,2) not null,
       symbol varchar(10) not null,
       created_by varchar(50) not null,
-      create_date datetime(6) not null,
+      created_date datetime(6) not null,
       updated_by varchar(50) not null,
       updated_date datetime(6) not null,
       primary key (id)
-) engine=InnoDB
+) engine=InnoDB;
+
+alter table coindesk drop index UK_p6i4ksyjei7kxx5h6prwcfj3m;
+alter table coindesk add constraint UK_p6i4ksyjei7kxx5h6prwcfj3m unique (code);
