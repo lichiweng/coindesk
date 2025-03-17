@@ -2,6 +2,7 @@ package demo.coindesk.controller;
 
 import demo.coindesk.dto.request.CoindeskRequest;
 import demo.coindesk.dto.response.CoindeskResponse;
+import demo.coindesk.dto.response.GetOtherCoindeskResponse;
 import demo.coindesk.service.CoindeskService;
 import demo.coindesk.util.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -46,5 +47,11 @@ public class CoindeskController {
     ) {
         log.info("Delete coindesk request: {}", code);
         return coindeskService.delete(code);
+    }
+
+    @GetMapping(value = "/otherCoindesk")
+    public ResponseDto<GetOtherCoindeskResponse> getOtherCoindesk() {
+        log.info("Get coindesk from other coindesk");
+        return coindeskService.getOtherCoindesk();
     }
 }

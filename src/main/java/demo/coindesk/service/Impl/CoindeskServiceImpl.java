@@ -1,26 +1,40 @@
 package demo.coindesk.service.Impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import demo.coindesk.dao.CoindeskDao;
 import demo.coindesk.dto.request.CoindeskRequest;
-import demo.coindesk.dto.response.CoindeskResponse;
+import demo.coindesk.dto.response.*;
 import demo.coindesk.entity.CoindeskEntity;
+import demo.coindesk.enums.CurrencyEnum;
 import demo.coindesk.service.CoindeskService;
+import demo.coindesk.util.CoindeskHelper;
 import demo.coindesk.util.ResponseDto;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CoindeskServiceImpl implements CoindeskService {
 
     @Autowired
     private CoindeskDao coindeskDao;
+    @Autowired
+    private CoindeskHelper coindeskHelper;
+
+    @Autowired
+    public CoindeskServiceImpl(CoindeskDao coindeskDao, CoindeskHelper coindeskHelper) {
+        this.coindeskDao = coindeskDao;
+        this.coindeskHelper = coindeskHelper;
+    }
 
     @Override
     public ResponseDto<CoindeskResponse> create(CoindeskRequest request) {
@@ -96,8 +110,30 @@ public class CoindeskServiceImpl implements CoindeskService {
             return ResponseDto.<Void>fail(errors);
         }
 
-        coindeskDao.delete(coindeskOpt.get());
+        coindeskDao.deleteById(coindeskOpt.get().getId());
         return ResponseDto.<Void>success(null);
+    }
+
+    @Override
+    public ResponseDto<GetOtherCoindeskResponse> getOtherCoindesk() {
+
+        OtherCoindeskResponse otherCoindeskResponse = coindeskHelper.request();
+        GetOtherCoindeskResponse getOtherCoindeskResponse = new GetOtherCoindeskResponse();
+        getOtherCoindeskResponse.setUpdateDate(otherCoindeskResponse.getTime().getUpdated());
+        Map<String, CurrencyResponse> bpiMap = otherCoindeskResponse.getBpi();
+        List<OtherCurrencyResponse> otherCurrencyList = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for (Map.Entry<String, CurrencyResponse> entry : bpiMap.entrySet()) {
+            CurrencyResponse currencyResponse = objectMapper.convertValue(entry.getValue(), CurrencyResponse.class);
+            OtherCurrencyResponse otherCurrencyResponse = new OtherCurrencyResponse();
+            otherCurrencyResponse.setCodeEn(currencyResponse.getCode());
+            otherCurrencyResponse.setSymbol(StringEscapeUtils.unescapeHtml4(currencyResponse.getSymbol()));
+            otherCurrencyResponse.setCodeCh(CurrencyEnum.getNameByCode(currencyResponse.getCode()));
+            otherCurrencyList.add(otherCurrencyResponse);
+        }
+        getOtherCoindeskResponse.setCurrencyList(otherCurrencyList);
+        return ResponseDto.<GetOtherCoindeskResponse>success(getOtherCoindeskResponse);
     }
 
     private CoindeskEntity generateCoindeskEntity(CoindeskRequest request) {

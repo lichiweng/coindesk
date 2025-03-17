@@ -19,6 +19,8 @@ public class CoindeskEntity {
     private String charName;
     @Column(name = "updated_utc", nullable = false, length = 50)
     private String updatedUtc;
+    @Column(name = "timezone", nullable = false, length = 50)
+    private String timezone;
     @Column(name = "code", nullable = false, length = 10, unique = true)
     private String code;
     @Column(name = "currency_en", nullable = false, length = 10)
