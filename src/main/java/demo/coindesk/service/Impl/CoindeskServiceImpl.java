@@ -14,6 +14,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class CoindeskServiceImpl implements CoindeskService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<CoindeskResponse> create(CoindeskRequest request) {
 
         Optional<CoindeskEntity> coindeskOpt = coindeskDao.findByCodeAndCharName(
@@ -54,6 +56,7 @@ public class CoindeskServiceImpl implements CoindeskService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<CoindeskResponse> update(Long id, CoindeskRequest request) {
 
         Optional<CoindeskEntity> coindeskOpt = coindeskDao.findById(id);
@@ -84,6 +87,7 @@ public class CoindeskServiceImpl implements CoindeskService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<List<CoindeskResponse>> findAll() {
 
         List<CoindeskEntity> coindeskEntities = coindeskDao.findAll();
@@ -101,6 +105,7 @@ public class CoindeskServiceImpl implements CoindeskService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<Void> delete(String code) {
 
         Optional<CoindeskEntity> coindeskOpt = coindeskDao.findByCode(code);
